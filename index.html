@@ -12,6 +12,7 @@
       label{
         display: block;
         font-weight: bold;
+        color: blue;
       }
 
       label::after{
@@ -24,6 +25,7 @@
       function init(){
         const speechForm = document.querySelector('#speechForm');
         const speechSettingsForm = document.querySelector('#speechSettingsForm');
+        setOutputDisplay();
 
         speechForm.addEventListener('submit', (event) => {
           event.preventDefault();
@@ -40,7 +42,6 @@
         speechSettingsForm.addEventListener('submit', (event) => {
           event.preventDefault();
         });
-
         speechSettingsForm.addEventListener('input', setOutputDisplay); 
         speechSettingsForm.addEventListener('reset', setOutputDisplay); 
       }
@@ -53,7 +54,7 @@
         window.speechSynthesis.speak(utterance);
       }
 
-      function setOutputDisplay(event){
+      async function setOutputDisplay(event){
         const settings = new FormData(speechSettingsForm);
 
         const rateOutput = document.querySelector('#rateOutput');
@@ -64,8 +65,53 @@
 
         const volumeOutput = document.querySelector('#volumeOutput');
         volumeOutput.value = settings.get('volume') || 1;
+
+        showVoices();
       }
 
+      // speechSynthesis.getVoices() is asynchronous on some browsers
+      // this function normalizes it across all browsers
+      function getVoices(){
+        return new Promise( (resolve) => {
+          let voices = window.speechSynthesis.getVoices();
+          if(voices.length){
+            resolve(voices);
+            return;
+          }
+
+          function voicesChangedHandler(){
+            voices = window.speechSynthesis.getVoices();
+            resolve(voices);
+          }
+
+          window.speechSynthesis.addEventListener('voiceschanged', voicesChangedHandler);
+        });
+      }
+
+      async function showVoices(){
+        let voiceOptions = [];
+        let voices = await getVoices();
+        voices.sort( (a,b) => {
+          if(a.lang < b.lang) return -1;
+          if(a.lang > b.lang) return 1;
+          return 0;
+        });
+        voices.forEach( (voice) => {
+          let option = document.createElement('option');
+          option.value = voice.name;
+          option.innerText = `${voice.name} (${voice.lang})`;
+          if(voice.default){
+            option.setAttribute('selected', '');
+          }
+          voiceOptions.push(option);
+        });
+
+        let voiceField = document.querySelector('#voice');
+        voiceOptions.forEach( (option) => {
+          voiceField.insertAdjacentElement('beforeend', option);
+        });
+
+      }
     </script>
   </head>
 
@@ -115,14 +161,14 @@
       <p>
         <!-- NOTE: valid range for pitch is a float [0 .. 2] -->
         <label for="pitch">Pitch</label>
-        0.5
+        0.1
         <input type="range"
                name="pitch"
                id="pitch"
                value="1"
-               min="0.5"
+               min="0.1"
                max="2"
-               step="0.5">
+               step="0.1">
         2
 
         <br>
@@ -153,7 +199,13 @@
                 id="volumeOutput"
                 value="1">1</output>
       </p>
- 
+
+      <p>
+        <label for="voice">Voice</label>
+        <select name="voice"
+                id="voice"
+                size="10"></select>
+      </p>
     </form>
 
 
