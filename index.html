@@ -13,7 +13,9 @@
         display: block;
       }
 
-      label:
+      label::after{
+        content: ":";
+      }
     </style>
     
     <script>
@@ -27,7 +29,8 @@
           const fields = new FormData(speechForm);
           const settings = new FormData(speechSettingsForm);
           const options = {
-            rate: settings.get('rate')
+            rate: settings.get('rate'),
+            pitch: settings.get('pitch')
           }
           speak(fields.get('text-to-speak'), options);
         });
@@ -36,23 +39,25 @@
           event.preventDefault();
         });
 
-        speechSettingsForm.addEventListener('input', (event) => {
-          const settings = new FormData(speechSettingsForm);
-
-        });
-
-        const rateField = document.querySelector('#rate');
-        rateField.addEventListener('change', (event) => {
-          const rateOutput = document.querySelector('#rateOutput');
-          rateOutput.value = rateField.valueAsNumber;
-        });
+        speechSettingsForm.addEventListener('input', setOutputDisplay); 
+        speechSettingsForm.addEventListener('reset', setOutputDisplay); 
       }
 
       function speak(message, options){
         let utterance = new SpeechSynthesisUtterance(message);
         utterance.rate = options.rate;
-        // utterance.pitch = options.pitch;
+        utterance.pitch = options.pitch;
         window.speechSynthesis.speak(utterance);
+      }
+
+      function setOutputDisplay(){
+        const settings = new FormData(speechSettingsForm);
+
+        const rateOutput = document.querySelector('#rateOutput');
+        rateOutput.value = settings.get('rate');
+
+        const pitchOutput = document.querySelector('#pitchOutput');
+        pitchOutput.value = settings.get('pitch');
       }
 
     </script>
@@ -81,7 +86,9 @@
              value="Reset"></input>
 
       <p>
+        <!-- NOTE: valid range for rate is a float [0.1 .. 10] -->
         <label for="rate">Rate</label>
+        0.5
         <input type="range"
                name="rate"
                id="rate"
@@ -89,11 +96,37 @@
                min="0.5"
                max="10"
                step="0.5">
+        10
+
+        <br>
+        Current value:
         <output for="rate"
                 name="rate-output"
                 id="rateOutput"
                 value="1">1</output>
       </p>
+
+      <p>
+        <!-- NOTE: valid range for pitch is a float [0 .. 2] -->
+        <label for="pitch">Pitch</label>
+        0.5
+        <input type="range"
+               name="pitch"
+               id="pitch"
+               value="1"
+               min="0.5"
+               max="2"
+               step="0.5">
+        2
+
+        <br>
+        Current value: 
+        <output for="pitch"
+                name="pitch-output"
+                id="pitchOutput"
+                value="1">1</output>
+      </p>
+ 
     </form>
 
 
