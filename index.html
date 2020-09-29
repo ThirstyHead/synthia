@@ -25,11 +25,10 @@
       window.addEventListener('load', init);
 
       async function init(){
-        const speechForm = document.querySelector('#speechForm');
-        const speechSettingsForm = document.querySelector('#speechSettingsForm');
-
         speechForm.addEventListener('submit', (event) => {
           event.preventDefault();
+
+          const speechSettingsForm = document.querySelector('#speechSettingsForm');
           const settings = new FormData(speechSettingsForm);
           const options = {
             rate: settings.get('rate'),
@@ -38,6 +37,7 @@
             voice: settings.get('voice')
           }
 
+          const speechForm = document.querySelector('#speechForm');
           const fields = new FormData(speechForm);
           speak(fields.get('text-to-speak'), options);
         });
