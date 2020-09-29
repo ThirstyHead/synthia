@@ -24,12 +24,12 @@
         color: blue;
       }
 
-      fieldset{
+      #voiceSettings{
         display: flex;
         flex-direction: row;
       }
 
-      fieldset p{
+      #voiceSettings p{
         padding-left: 1em;
       }
     </style>
@@ -255,36 +255,38 @@
       <!-- Voice -->
       <fieldset>
         <legend>Voice Options</legend>
-      <p>
-        <label for="voice">Voice</label>
-        <select name="voice"
-                id="voice"
-                size="10"></select>
-        <br>
-        Current value: 
-        <output for="voice"
-                name="voice-output"
-                id="voiceOutput"
-                value=""></output>
-      </p>
+        <div id="voiceSettings">
+          <p>
+            <label for="voice">Voice</label>
+            <select name="voice"
+                    id="voice"
+                    size="10"></select>
+            <br>
+            Current value: 
+            <output for="voice"
+                    name="voice-output"
+                    id="voiceOutput"
+                    value=""></output>
+          </p>
 
-      <!-- VoiceFilter -->
-      <p>
-        <label for="voiceFilter">Enable Filter</label>
-        <input type="checkbox"
-               name="voice-filter"
-               id="voiceFilter"
-               checked></input>
+          <!-- VoiceFilter -->
+          <p>
+            <label for="voiceFilter">Enable Filter</label>
+            <input type="checkbox"
+                   name="voice-filter"
+                   id="voiceFilter"
+                   checked></input>
 
-      </p>
+          </p>
 
-      <!-- VoiceLang -->
-      <p>
-        <label for="voiceLang">Language</label>
-        <input type="text"
-               name="voice-lang"
-               id="voiceLang"></input>
-      </p>
+          <!-- VoiceLang -->
+          <p>
+            <label for="voiceLang">Language</label>
+            <input type="text"
+                   name="voice-lang"
+                   id="voiceLang"></input>
+          </p>
+        </div>
       </fieldset>
     </form>
   </body>
