@@ -85,8 +85,11 @@
       }
 
       function setDefaultLanguage(){
+        // NOTE: Safari returns 'en-us' instead of 'en-US'
+        let lang = navigator.language;
+        let parts = lang.split('-');
         const voiceLang = document.querySelector('#voiceLang');
-        voiceLang.value = navigator.language;
+        voiceLang.value = `${parts[0]}-${parts[1].toUpperCase()}`;
       }
 
       function setOutputDisplay(event){
