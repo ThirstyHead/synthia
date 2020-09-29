@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Synthia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Scott Davis <scott@thirstyhead.com>">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <script>
+      window.addEventListener('load', init);
+      function init(){
+        const speechForm = document.querySelector('#speechForm');
+        speechForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const fields = new FormData(speechForm);
+          speak(fields.get('text-to-speak'));
+        });
+      }
+
+      function speak(message){
+        let utterance = new SpeechSynthesisUtterance(message);
+        window.speechSynthesis.speak(utterance);
+      }
+
+    </script>
+  </head>
+
+  <body>
+    <h1>Hey, Synthia!</h1>
+    <form id="speechForm">
+      <input type="submit" 
+             id="speakButton"
+             value="Speak"></input>
+      <input type="reset"
+             value="Reset"></input>
+      <br>
+      <textarea name="text-to-speak" 
+                id="textToSpeak" 
+                rows="10"></textarea>
+    </form>
+
+  </body>
+</html>
