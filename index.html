@@ -21,11 +21,12 @@
     </style>
     
     <script>
+      let voices = undefined;
       window.addEventListener('load', init);
-      function init(){
+
+      async function init(){
         const speechForm = document.querySelector('#speechForm');
         const speechSettingsForm = document.querySelector('#speechSettingsForm');
-        setOutputDisplay();
 
         speechForm.addEventListener('submit', (event) => {
           event.preventDefault();
@@ -34,7 +35,8 @@
           const options = {
             rate: settings.get('rate'),
             pitch: settings.get('pitch'),
-            volume: settings.get('volume')
+            volume: settings.get('volume'),
+            voice: settings.get('voice')
           }
           speak(fields.get('text-to-speak'), options);
         });
@@ -43,18 +45,25 @@
           event.preventDefault();
         });
         speechSettingsForm.addEventListener('input', setOutputDisplay); 
+        speechSettingsForm.addEventListener('change', setOutputDisplay); 
         speechSettingsForm.addEventListener('reset', setOutputDisplay); 
+
+        voices = await getVoices();
+        showVoices();
+        setOutputDisplay();
       }
+
 
       function speak(message, options){
         let utterance = new SpeechSynthesisUtterance(message);
         utterance.rate = options.rate;
         utterance.pitch = options.pitch;
         utterance.volume = options.volume;
+        utterance.voice = getVoice(options.voice);
         window.speechSynthesis.speak(utterance);
       }
 
-      async function setOutputDisplay(event){
+      function setOutputDisplay(event){
         const settings = new FormData(speechSettingsForm);
 
         const rateOutput = document.querySelector('#rateOutput');
@@ -66,31 +75,33 @@
         const volumeOutput = document.querySelector('#volumeOutput');
         volumeOutput.value = settings.get('volume') || 1;
 
-        showVoices();
+        const voiceOutput = document.querySelector('#voiceOutput');
+        voiceOutput.value = settings.get('voice');
       }
 
       // speechSynthesis.getVoices() is asynchronous on some browsers
       // this function normalizes it across all browsers
       function getVoices(){
         return new Promise( (resolve) => {
-          let voices = window.speechSynthesis.getVoices();
+          voices = window.speechSynthesis.getVoices();
           if(voices.length){
             resolve(voices);
             return;
           }
 
-          function voicesChangedHandler(){
+          window.speechSynthesis.addEventListener('voiceschanged', () => {
             voices = window.speechSynthesis.getVoices();
             resolve(voices);
-          }
-
-          window.speechSynthesis.addEventListener('voiceschanged', voicesChangedHandler);
+          });
         });
       }
 
-      async function showVoices(){
+      function getVoice(voiceName){
+        return voices.find( (voice) => voice.name === voiceName );
+      }
+
+      function showVoices(){
         let voiceOptions = [];
-        let voices = await getVoices();
         voices.sort( (a,b) => {
           if(a.lang < b.lang) return -1;
           if(a.lang > b.lang) return 1;
@@ -107,10 +118,10 @@
         });
 
         let voiceField = document.querySelector('#voice');
+        voiceField.innerHTML = '';
         voiceOptions.forEach( (option) => {
           voiceField.insertAdjacentElement('beforeend', option);
         });
-
       }
     </script>
   </head>
@@ -140,14 +151,14 @@
       <p>
         <!-- NOTE: valid range for rate is a float [0.1 .. 10] -->
         <label for="rate">Rate</label>
-        0.5
+        0.1
         <input type="range"
                name="rate"
                id="rate"
                value="1"
-               min="0.5"
+               min="0.1"
                max="10"
-               step="0.5">
+               step="0.1">
         10
 
         <br>
@@ -205,6 +216,12 @@
         <select name="voice"
                 id="voice"
                 size="10"></select>
+        <br>
+        Current value: 
+        <output for="voice"
+                name="voice-output"
+                id="voiceOutput"
+                value=""></output>
       </p>
     </form>
 
