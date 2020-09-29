@@ -30,7 +30,6 @@
 
         speechForm.addEventListener('submit', (event) => {
           event.preventDefault();
-          const fields = new FormData(speechForm);
           const settings = new FormData(speechSettingsForm);
           const options = {
             rate: settings.get('rate'),
@@ -38,6 +37,8 @@
             volume: settings.get('volume'),
             voice: settings.get('voice')
           }
+
+          const fields = new FormData(speechForm);
           speak(fields.get('text-to-speak'), options);
         });
 
@@ -53,7 +54,6 @@
         setOutputDisplay();
       }
 
-
       function speak(message, options){
         let utterance = new SpeechSynthesisUtterance(message);
         utterance.rate = options.rate;
@@ -64,16 +64,17 @@
       }
 
       function setOutputDisplay(event){
+        const speechSettingsForm = document.querySelector('#speechSettingsForm');
         const settings = new FormData(speechSettingsForm);
 
         const rateOutput = document.querySelector('#rateOutput');
-        rateOutput.value = settings.get('rate') || 1;
+        rateOutput.value = settings.get('rate');
 
         const pitchOutput = document.querySelector('#pitchOutput');
-        pitchOutput.value = settings.get('pitch') || 1;
+        pitchOutput.value = settings.get('pitch');
 
         const volumeOutput = document.querySelector('#volumeOutput');
-        volumeOutput.value = settings.get('volume') || 1;
+        volumeOutput.value = settings.get('volume');
 
         const voiceOutput = document.querySelector('#voiceOutput');
         voiceOutput.value = settings.get('voice');
@@ -148,69 +149,73 @@
       <input type="reset"
              value="Reset"></input>
 
+      <!-- Rate -->
+      <!-- NOTE: valid range for rate is a float [0.1 .. 10.0] -->
       <p>
-        <!-- NOTE: valid range for rate is a float [0.1 .. 10] -->
         <label for="rate">Rate</label>
         0.1
         <input type="range"
                name="rate"
                id="rate"
-               value="1"
+               value="1.0"
                min="0.1"
-               max="10"
+               max="10.0"
                step="0.1">
-        10
+        10.0
 
         <br>
         Current value:
         <output for="rate"
                 name="rate-output"
                 id="rateOutput"
-                value="1">1</output>
+                value="1.0">1.0</output>
       </p>
-
+ 
+      <!-- Pitch -->
+      <!-- NOTE: valid range for pitch is a float [0 .. 2.0] -->
       <p>
-        <!-- NOTE: valid range for pitch is a float [0 .. 2] -->
         <label for="pitch">Pitch</label>
         0.1
         <input type="range"
                name="pitch"
                id="pitch"
-               value="1"
+               value="1.0"
                min="0.1"
-               max="2"
+               max="2.0"
                step="0.1">
-        2
+        2.0
 
         <br>
         Current value: 
         <output for="pitch"
                 name="pitch-output"
                 id="pitchOutput"
-                value="1">1</output>
+                value="1.0">1.0</output>
       </p>
 
+      <!-- Volume -->
+      <!-- NOTE: valid range for volume is a float [0 .. 1.0] -->
       <p>
-        <!-- NOTE: valid range for volume is a float [0 .. 1] -->
         <label for="volume">Volume</label>
         0.1
         <input type="range"
                name="volume"
                id="volume"
-               value="1"
+               value="1.0"
                min="0.1"
-               max="1"
+               max="1.0"
                step="0.1">
-        1
+        1.0
 
         <br>
         Current value: 
         <output for="volume"
                 name="volume-output"
                 id="volumeOutput"
-                value="1">1</output>
+                value="1.0">1.0</output>
       </p>
 
+      <!-- Voice -->
       <p>
         <label for="voice">Voice</label>
         <select name="voice"
@@ -224,16 +229,5 @@
                 value=""></output>
       </p>
     </form>
-
-
-
-
-
-
-
-
-
-
-
   </body>
 </html>
