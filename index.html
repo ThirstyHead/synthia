@@ -18,6 +18,20 @@
       label::after{
         content: ":";
       }
+
+      legend{
+        font-weight: bold;
+        color: blue;
+      }
+
+      fieldset{
+        display: flex;
+        flex-direction: row;
+      }
+
+      fieldset p{
+        flex-grow: 1;
+      }
     </style>
     
     <script>
@@ -25,10 +39,12 @@
       window.addEventListener('load', init);
 
       async function init(){
+        const speechForm = document.querySelector('#speechForm');
+        const speechSettingsForm = document.querySelector('#speechSettingsForm');
+
         speechForm.addEventListener('submit', (event) => {
           event.preventDefault();
 
-          const speechSettingsForm = document.querySelector('#speechSettingsForm');
           const settings = new FormData(speechSettingsForm);
           const options = {
             rate: settings.get('rate'),
@@ -37,7 +53,6 @@
             voice: settings.get('voice')
           }
 
-          const speechForm = document.querySelector('#speechForm');
           const fields = new FormData(speechForm);
           speak(fields.get('text-to-speak'), options);
         });
@@ -78,6 +93,9 @@
 
         const voiceOutput = document.querySelector('#voiceOutput');
         voiceOutput.value = settings.get('voice');
+
+        const voiceLang = document.querySelector('#voiceLang');
+        voiceLang.value = navigator.language;
       }
 
       // speechSynthesis.getVoices() is asynchronous on some browsers
@@ -216,6 +234,8 @@
       </p>
 
       <!-- Voice -->
+      <fieldset>
+        <legend>Voice Options</legend>
       <p>
         <label for="voice">Voice</label>
         <select name="voice"
@@ -228,6 +248,23 @@
                 id="voiceOutput"
                 value=""></output>
       </p>
+
+      <!-- VoiceFilter -->
+      <p>
+        <label for="voiceFilter">Enable Filter</label>
+        <input type="checkbox"
+               name="voice-filter"
+               id="voiceFilter"></input>
+      </p>
+
+      <!-- VoiceLang -->
+      <p>
+        <label for="voiceLang">Language</label>
+        <input type="text"
+               name="voice-lang"
+               id="voiceLang"></input>
+      </p>
+      </fieldset>
     </form>
   </body>
 </html>
