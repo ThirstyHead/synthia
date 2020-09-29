@@ -30,7 +30,7 @@
       }
 
       fieldset p{
-        flex-grow: 1;
+        padding-left: 1em;
       }
     </style>
     
@@ -64,9 +64,15 @@
         speechSettingsForm.addEventListener('change', setOutputDisplay); 
         speechSettingsForm.addEventListener('reset', setOutputDisplay); 
 
+        let voiceFilter = document.querySelector('#voiceFilter');
+        voiceFilter.addEventListener('change', (event) => {
+          showVoices();
+        });
+
         voices = await getVoices();
-        showVoices();
+        setDefaultLanguage();
         setOutputDisplay();
+        showVoices();
       }
 
       function speak(message, options){
@@ -76,6 +82,11 @@
         utterance.volume = options.volume;
         utterance.voice = getVoice(options.voice);
         window.speechSynthesis.speak(utterance);
+      }
+
+      function setDefaultLanguage(){
+        const voiceLang = document.querySelector('#voiceLang');
+        voiceLang.value = navigator.language;
       }
 
       function setOutputDisplay(event){
@@ -94,8 +105,6 @@
         const voiceOutput = document.querySelector('#voiceOutput');
         voiceOutput.value = settings.get('voice');
 
-        const voiceLang = document.querySelector('#voiceLang');
-        voiceLang.value = navigator.language;
       }
 
       // speechSynthesis.getVoices() is asynchronous on some browsers
@@ -126,6 +135,9 @@
           if(a.lang > b.lang) return 1;
           return 0;
         });
+
+        let voiceFilter = document.querySelector('#voiceFilter').checked;
+        let voiceLang = document.querySelector('#voiceLang').value;
         voices.forEach( (voice) => {
           let option = document.createElement('option');
           option.value = voice.name;
@@ -133,7 +145,14 @@
           if(voice.default){
             option.setAttribute('selected', '');
           }
-          voiceOptions.push(option);
+
+          if(voiceFilter){ 
+            if(voice.lang === voiceLang){
+              voiceOptions.push(option);
+            }
+          }else{
+            voiceOptions.push(option);
+          }
         });
 
         let voiceField = document.querySelector('#voice');
@@ -254,7 +273,9 @@
         <label for="voiceFilter">Enable Filter</label>
         <input type="checkbox"
                name="voice-filter"
-               id="voiceFilter"></input>
+               id="voiceFilter"
+               checked></input>
+
       </p>
 
       <!-- VoiceLang -->
