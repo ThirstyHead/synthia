@@ -32,6 +32,10 @@
       #voiceSettings p{
         padding-left: 1em;
       }
+
+      .note{
+        font-weight: bold;
+      }
     </style>
     
     <script>
@@ -87,6 +91,9 @@
       function setDefaultLanguage(){
         // NOTE: Safari returns 'en-us' instead of 'en-US'
         let lang = navigator.language;
+        let detectedLanguage = document.querySelector('#detectedLanguage');
+        detectedLanguage.innerHTML = lang;
+
         let parts = lang.split('-');
         const voiceLang = document.querySelector('#voiceLang');
         voiceLang.value = `${parts[0]}-${parts[1].toUpperCase()}`;
@@ -290,10 +297,24 @@
                    id="voiceLang"
                    placeholder="en-US"></input>
             <br>
-            (example: en-US, es-MX)
+            Detected language: <span id="detectedLanguage"></span>
+            <br>
+            (Correct format: en-US, es-MX)
           </p>
         </div>
       </fieldset>
+
+      <p>
+      <span class="note">iOS Note</span>: iOS returns multiple possible voices per locale when you call <code>window.speechSynthesis.getVoices()</code>, but only allows one to be used. For example, the <code>en-US</code> locale on iOS offers four choices for voices: Aaron, Fred, Nicky, and Samantha. However, regardless of who you choose, you'll only hear Samantha for <code>en-US</code>.
+      </p>
+
+      <p>
+      <span class="note">Safari Note</span>: The <a href="http://tools.ietf.org/html/bcp47">BCP 47</a> country code/region subtag returned by <code>navigator.language</code> is typically uppercase (<code>en-US</code>, <code>es-MX</code>). In Safari, it is returned lowercase (<code>en-us</code>, <code>es-mx</code>). The voices returned by <code>window.speechSynthesis.getVoices()</code> use uppercase for the country code/region subtag, so there will be a mismatch trying to match voices with the current browser language in Safari unless you account for it. (See <code>setDefaultLanguage()</code> in the source code.)
+      </p>
+
+      <p>
+      <span class="note">Android Note:</span> Android does not allow you to change the voice used by the <code>SpeechSynthesis</code> API via JavaScript. To change the voice for <code>SpeechSynthesis</code>, open the <code>Settings</code> app and navigate to <code>Controls &gt; Language and Input &gt; Text-to-Speech Options</code>. Select the gear icon next to <code>Google Text-to-Speech Engine</code>, and then select <code>Language</code>. You must reboot your Android device for this change to take effect.
+      </p>
     </form>
   </body>
 </html>
