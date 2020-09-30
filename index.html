@@ -191,7 +191,7 @@
         <label for="textToSpeak">Text to Speak</label>
         <textarea name="text-to-speak" 
                   id="textToSpeak" 
-                  rows="10"></textarea>
+                  rows="5"></textarea>
       </p>
     </form>
 
@@ -310,15 +310,15 @@
       </fieldset>
 
       <p>
-      <span class="note">iOS Note</span>: iOS returns multiple possible voices per locale when you call <code>window.speechSynthesis.getVoices()</code>, but only allows one to be used. For example, the <code>en-US</code> locale on iOS offers four choices for voices: Aaron, Fred, Nicky, and Samantha. However, regardless of who you choose, you'll only hear Samantha for <code>en-US</code>.
+      <span class="note">iOS Note</span>: iOS returns multiple possible voices per locale when you call <code>window.speechSynthesis.getVoices()</code>, but only allows one to be used. For example, the <code>en-US</code> locale on iOS offers four choices for voices: Aaron, Fred, Nicky, and Samantha. However, regardless of who you choose, you'll only hear Samantha for <code>en-US</code>. Also, <code>navigator.language</code> returns <code>en</code> instead of <code>en-US</code>. (See <code>setDefaultLanguage()</code> in the source code for my workaround.)
       </p>
 
       <p>
-      <span class="note">Safari Note</span>: The <a href="http://tools.ietf.org/html/bcp47">BCP 47</a> country code/region subtag returned by <code>navigator.language</code> is typically uppercase (<code>en-US</code>, <code>es-MX</code>). In Safari, it is returned lowercase (<code>en-us</code>, <code>es-mx</code>). The voices returned by <code>window.speechSynthesis.getVoices()</code> use uppercase for the country code/region subtag, so there will be a mismatch trying to match voices with the current browser language in Safari unless you account for it. (See <code>setDefaultLanguage()</code> in the source code.)
+      <span class="note">Safari Note</span>: The <a href="http://tools.ietf.org/html/bcp47">BCP 47</a> country code/region subtag returned by <code>navigator.language</code> is typically uppercase (<code>en-US</code>, <code>es-MX</code>). In Safari, it is returned lowercase (<code>en-us</code>, <code>es-mx</code>). The voices returned by <code>window.speechSynthesis.getVoices()</code> use uppercase for the country code/region subtag, so there will be a mismatch trying to match voices with the current browser language in Safari unless you account for it. (See <code>setDefaultLanguage()</code> in the source code for my workaround.)
       </p>
 
       <p>
-      <span class="note">Android Note:</span> Android does not allow you to change the voice used by the <code>SpeechSynthesis</code> API via JavaScript. To change the voice for <code>SpeechSynthesis</code>, open the <code>Settings</code> app and navigate to <code>Controls &gt; Language and Input &gt; Text-to-Speech Options</code>. Select the gear icon next to <code>Google Text-to-Speech Engine</code>, and then select <code>Language</code>. You must reboot your Android device for this change to take effect.
+      <span class="note">Android Note:</span> Android does not allow you to change the voice used by the <code>SpeechSynthesis</code> API via JavaScript. To change the voice for <code>SpeechSynthesis</code>, open the <code>Settings</code> app and navigate to <code>Accessibility &gt; Text-to-Speech Output</code> and adjust the <code>Language</code> option. To install additional voices, select the gear icon next to <code>Preferred Engine</code>, and then select <code>Install voice data</code>. If there are multiple voices available for the downloaded language, you can choose one here. This will be the only voice available to you in the browser for use with the <code>SpeechSynthesis</code> API. You must reboot your Android device for this change to take effect.
       </p>
     </form>
   </body>
