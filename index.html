@@ -29,6 +29,13 @@
         flex-direction: row;
       }
 
+      @media only screen and (orientation: portrait) {
+        #voiceSettings{
+          display: flex;
+          flex-direction: column;
+        }
+      }
+
       #voiceSettings p{
         padding-left: 1em;
       }
@@ -36,6 +43,15 @@
       .note{
         font-weight: bold;
       }
+
+      #textToSpeak{
+        -webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+        width: 90%;
+      }
+
     </style>
     
     <script>
